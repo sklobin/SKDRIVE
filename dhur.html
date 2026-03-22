@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movie Details</title>
+<title>Movie Download</title>
 
 <style>
 body{
     background:#000;
     color:white;
-    font-family:'Poppins', sans-serif;
+    font-family:Arial;
     padding:15px;
 }
 
-/* Card */
 .card{
     background:#141414;
     border-radius:12px;
@@ -23,18 +22,16 @@ body{
     box-shadow:0 0 20px rgba(255,0,0,0.2);
 }
 
-/* Image */
 .img-box{
     position:relative;
 }
 
 img{
     width:100%;
-    height:500px;
+    height:400px;
     object-fit:cover;
 }
 
-/* Quality Tag */
 .quality{
     position:absolute;
     top:10px;
@@ -46,23 +43,10 @@ img{
     font-weight:bold;
 }
 
-/* Content */
 .content{
     padding:15px;
 }
 
-h2{
-    margin:0;
-    font-size:20px;
-}
-
-.info{
-    font-size:14px;
-    color:#bbb;
-    margin-top:5px;
-}
-
-/* Download Button */
 button{
     width:100%;
     padding:12px;
@@ -73,16 +57,40 @@ button{
     font-size:16px;
     margin-top:12px;
     cursor:pointer;
-    transition:0.3s;
 }
 
-button:hover{
-    background:#b20710;
+/* POPUP */
+.popup{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
 }
 
-button:disabled{
-    background:#555;
-    cursor:not-allowed;
+.popup-box{
+    background:#141414;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    width:300px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:5px;
+}
+
+.error{
+    color:red;
+    font-size:14px;
 }
 </style>
 </head>
@@ -90,29 +98,37 @@ button:disabled{
 <body>
 
 <div class="card">
-    
+
     <div class="img-box">
-        <span class="quality" id="qualityTag">HD</span>
-        <img id="movieImg" src="https://via.placeholder.com/300x200">
+        <span class="quality" id="qualityTag">720p</span>
+        <img id="movieImg">
     </div>
 
     <div class="content">
-        <h2 id="movieName">Movie Name</h2>
+        <h2 id="movieName"></h2>
 
-        <p class="info">Quality: <span id="qualityText">HD</span></p>
-        <p class="info">Size: <span id="size">1.2GB</span></p>
-        <p class="info">Format: <span id="format">MP4</span></p>
+        <p>Quality: <span id="qualityText"></span></p>
+        <p>Size: <span id="size"></span></p>
+        <p>Format: <span id="format"></span></p>
 
-        <button id="downloadBtn" onclick="startTimer()">
-            Download
-        </button>
+        <button id="downloadBtn" onclick="openPopup()">Download</button>
     </div>
 
 </div>
 
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <div class="popup-box">
+        <h3>Enter Key 🔑</h3>
+        <input type="text" id="keyInput" placeholder="Enter key">
+        <p class="error" id="errorMsg"></p>
+        <button onclick="checkKey()">Submit</button>
+    </div>
+</div>
+
 <script>
 
-// ===== EDITABLE DATA =====
+// ===== MOVIE DATA =====
 let link = "https://cloud.jazzdrive.com.pk/share/I9Y488BQE09ZPOYO";
 
 document.getElementById("movieName").innerText = "Dhurandar the Revenge";
@@ -122,7 +138,60 @@ document.getElementById("size").innerText = "1.31GB";
 document.getElementById("format").innerText = "MP4";
 document.getElementById("movieImg").src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlA52gybLs_6aq6paMSt2jaUX3Sj9sUX5wpHfmZtFKKQ&s=10";
 
-// ===== TIMER FUNCTION =====
+// ===== SIMPLE ENCODE FUNCTION =====
+function encode(str){
+    return btoa(str);
+}
+
+// ===== KEYS DATABASE (ENCODED) =====
+let keysDB = [
+    {key: encode("A1B2C3"), used:false},
+    {key: encode("X9Y8Z7"), used:false},
+    {key: encode("MOVIE123"), used:false}
+];
+
+// ===== LOAD SAVED KEYS =====
+window.onload = function(){
+    let saved = JSON.parse(localStorage.getItem("keysDB"));
+    if(saved){
+        keysDB = saved;
+    }
+}
+
+// ===== OPEN POPUP =====
+function openPopup(){
+    document.getElementById("popup").style.display = "flex";
+}
+
+// ===== CHECK KEY =====
+function checkKey(){
+    let userKey = document.getElementById("keyInput").value.trim();
+    let encodedKey = encode(userKey);
+
+    let index = keysDB.findIndex(k => k.key === encodedKey);
+
+    if(index === -1){
+        document.getElementById("errorMsg").innerText = "Invalid Key ❌";
+        return;
+    }
+
+    if(keysDB[index].used){
+        document.getElementById("errorMsg").innerText = "Key already used ❌";
+        return;
+    }
+
+    // mark used
+    keysDB[index].used = true;
+
+    // save
+    localStorage.setItem("keysDB", JSON.stringify(keysDB));
+
+    document.getElementById("popup").style.display = "none";
+
+    startTimer();
+}
+
+// ===== TIMER =====
 function startTimer(){
     let btn = document.getElementById("downloadBtn");
     let time = 10;
