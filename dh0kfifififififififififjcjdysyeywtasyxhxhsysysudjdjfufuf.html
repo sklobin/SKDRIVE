@@ -143,48 +143,6 @@ function encode(str){
     return btoa(str);
 }
 
-// ===== KEYS DATABASE (ENCODED) =====
-let keysDB = [
-    {key: encode("A1B2C3"), used:false},
-    {key: encode("X9Y8Z7"), used:false},
-    {key: encode("MOVIE123"), used:false}
-];
-
-// ===== LOAD SAVED KEYS =====
-window.onload = function(){
-    let saved = JSON.parse(localStorage.getItem("keysDB"));
-    if(saved){
-        keysDB = saved;
-    }
-}
-
-// ===== OPEN POPUP =====
-function openPopup(){
-    document.getElementById("popup").style.display = "flex";
-}
-
-// ===== CHECK KEY =====
-function checkKey(){
-    let userKey = document.getElementById("keyInput").value.trim();
-    let encodedKey = encode(userKey);
-
-    let index = keysDB.findIndex(k => k.key === encodedKey);
-
-    if(index === -1){
-        document.getElementById("errorMsg").innerText = "Invalid Key ❌";
-        return;
-    }
-
-    if(keysDB[index].used){
-        document.getElementById("errorMsg").innerText = "Key already used ❌";
-        return;
-    }
-
-    // mark used
-    keysDB[index].used = true;
-
-    // save
-    localStorage.setItem("keysDB", JSON.stringify(keysDB));
 
     document.getElementById("popup").style.display = "none";
 
