@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SK JAZZ DRIVE</title>
 
 <!-- Tailwind + Fonts -->
@@ -14,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-/* ===== MOVIE CSS (UNCHANGED) ===== */
 *{
     margin:0;
     padding:0;
@@ -162,9 +160,10 @@ footer p{
     color:#aaa;
 }
 
-/* ===== LOGIN CSS (UNCHANGED) ===== */
+/* ===== LOGIN CSS ===== */
 .login-container {
   animation: fadeInScale 0.4s ease-out forwards;
+  background: #1e1e1e; /* Darker card */
 }
 
 @keyframes fadeInScale {
@@ -180,98 +179,142 @@ footer p{
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   border-color: rgb(59 130 246);
 }
+
+input::placeholder {
+  color: #aaa;
+}
+
+#error-message {
+  min-height: 24px;
+  color: #f87171; /* Tailwind red-400 */
+  font-weight: bold;
+  text-align: center;
+  margin-top: 8px;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+#error-message.shake {
+  animation: shake 0.3s;
+}
 </style>
 </head>
 
 <body>
 
 <!-- ================= LOGIN PAGE ================= -->
-<div id="loginPage" class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen flex items-center justify-center p-4">
-
-<div class="login-container bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
-
-<div class="px-8 pt-8 pb-6 text-center border-b border-slate-100">
-<div class="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
-<i class="fa-solid fa-shield-halved text-white text-3xl"></i>
-</div>
-<h1 class="text-2xl font-semibold text-slate-800">Welcome back</h1>
-</div>
-
-<div class="p-8">
-<form id="login-form" class="space-y-6">
-
-<input type="text" id="username" placeholder="Username" required class="input-focus w-full p-3 border rounded-xl">
-<input type="password" id="password" placeholder="Password" required class="input-focus w-full p-3 border rounded-xl">
-
-<button type="submit" id="login-btn" class="w-full bg-blue-600 text-white py-3 rounded-xl">
-Login
-</button>
-
-<div id="error-message" class="text-red-500 text-center"></div>
-
-</form>
-</div>
-</div>
+<div id="loginPage" class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen flex items-center justify-center p-4">
+  <div class="login-container rounded-2xl shadow-xl max-w-md w-full overflow-hidden p-8">
+    <div class="text-center mb-6">
+      <div class="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
+        <i class="fa-solid fa-shield-halved text-white text-3xl"></i>
+      </div>
+      <h1 class="text-2xl font-semibold text-white">Welcome back</h1>
+    </div>
+    <form id="login-form" class="space-y-6">
+      <input type="text" id="username" placeholder="Username" required class="input-focus w-full p-3 border rounded-xl text-white bg-gray-800 placeholder-gray-400">
+      <input type="password" id="password" placeholder="Password" required class="input-focus w-full p-3 border rounded-xl text-white bg-gray-800 placeholder-gray-400">
+      <button type="submit" id="login-btn" class="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold">Login</button>
+      <div id="error-message"></div>
+    </form>
+  </div>
 </div>
 
 <!-- ================= MOVIE PAGE ================= -->
 <div id="moviePage" style="display:none;">
+  <header>
+    <div class="logo">SK JAZZ DRIVE</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Contact</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
 
-<header>
-<div class="logo">SK JAZZ DRIVE</div>
-<nav>
-<a href="#">Home</a>
-<a href="#">Contact</a>
-</nav>
-</header>
+  <section class="movies">
+    <h3>MOVIES</h3>
+    <div class="row"></div>
+  </section>
 
-<section class="movies">
-<h3>MOVIES</h3>
-
-<div class="row">
-<div class="card">
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlA52gybLs_6aq6paMSt2jaUX3Sj9sUX5wpHfmZtFKKQ&s=10">
-<div class="card-content">
-<span class="movie-name">Dhurandar the revenge</span>
-<span class="quality">720</span>
-</div>
-<a href="dhur.html" class="download-link">Download</a>
-</div>
-</div>
-
-</section>
-
-<footer>
-<p>© 2026 SK JAZZ DRIVE</p>
-</footer>
-
+  <footer>
+    <p>© 2026 SK JAZZ DRIVE</p>
+  </footer>
 </div>
 
 <script>
-// USERS
+// ===== USERS =====
 const users = [
   { username: "admin", password: "password123" },
   { username: "testuser", password: "testpassword" }
 ];
 
+// ===== MOVIES =====
+const movies = [
+  {
+    name: "Dhurandar the revenge",
+    quality: "720p",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlA52gybLs_6aq6paMSt2jaUX3Sj9sUX5wpHfmZtFKKQ&s=10",
+    link: "dh0kfifififififififififjcjdysyeywtasyxhxhsysysudjdjfufuf.html"
+  },
+];
+
+// ===== RENDER MOVIES =====
+const row = document.querySelector(".row");
+function renderMovies() {
+  row.innerHTML = "";
+  movies.forEach(movie => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.innerHTML = `
+      <img src="${movie.image}">
+      <div class="card-content">
+        <span class="movie-name">${movie.name}</span>
+        <span class="quality">${movie.quality}</span>
+      </div>
+      <a href="${movie.link}" class="download-link">Download</a>
+    `;
+    row.appendChild(card);
+  });
+}
+
+// ===== LOGIN =====
 const form = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
 
 form.addEventListener('submit', function(e) {
   e.preventDefault();
-
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
 
   const user = users.find(u => u.username === username && u.password === password);
 
   if(user){
-    // LOGIN SUCCESS
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("moviePage").style.display = "block";
+    renderMovies();
   } else {
     errorMessage.textContent = "Invalid login!";
+    errorMessage.classList.remove("shake");
+    void errorMessage.offsetWidth; // trigger reflow
+    errorMessage.classList.add("shake");
   }
+});
+
+// Clear error on input
+document.getElementById("username").addEventListener("input", () => { errorMessage.textContent = ""; });
+document.getElementById("password").addEventListener("input", () => { errorMessage.textContent = ""; });
+
+// ===== LOGOUT =====
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  document.getElementById("moviePage").style.display = "none";
+  document.getElementById("loginPage").style.display = "flex";
+  form.reset();
 });
 </script>
 
